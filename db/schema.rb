@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_22_180317) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_26_224737) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "post_tags", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_post_tags_on_post_id"
+    t.index ["tag_id"], name: "index_post_tags_on_tag_id"
+  end
 
   create_table "posts", force: :cascade do |t|
     t.string "title", null: false
@@ -21,18 +30,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_22_180317) do
     t.integer "answers_count", default: 0, null: false
     t.integer "likes_count", default: 0, null: false
     t.integer "user_id", null: false
-    t.integer "tag_id", null: false
+    t.integer "tag_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "posttotags", force: :cascade do |t|
-    t.bigint "post_id", null: false
-    t.bigint "tag_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["post_id"], name: "index_posttotags_on_post_id"
-    t.index ["tag_id"], name: "index_posttotags_on_tag_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -49,15 +49,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_22_180317) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "usertopost", force: :cascade do |t|
-    t.bigint "posts_id", null: false
-    t.bigint "users_id", null: false
-    t.index ["posts_id"], name: "index_usertopost_on_posts_id"
-    t.index ["users_id"], name: "index_usertopost_on_users_id"
-  end
-
-  add_foreign_key "posttotags", "posts"
-  add_foreign_key "posttotags", "tags"
-  add_foreign_key "usertopost", "posts", column: "posts_id"
-  add_foreign_key "usertopost", "users", column: "users_id"
+  add_foreign_key "post_tags", "posts"
+  add_foreign_key "post_tags", "tags"
 end
